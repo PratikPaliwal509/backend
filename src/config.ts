@@ -7,6 +7,6 @@ export const cfg = {
   razorpayKeyId: process.env.RAZORPAY_KEY_ID ?? '',
   razorpayKeySecret: process.env.RAZORPAY_KEY_SECRET ?? '',
   razorpayWebhookSecret: process.env.RAZORPAY_WEBHOOK_SECRET ?? '',
-  frontendUrl: process.env.FRONTEND_URL ?? 'http://localhost:5173',
+  frontendUrl: process.env.FRONTEND_URL ?? 'https://meet-scheduler-frontend.vercel.app',
   isDev: process.env.NODE_ENV !== 'production',
 }

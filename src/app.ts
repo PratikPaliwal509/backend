@@ -22,7 +22,7 @@ export async function buildApp() {
 
   // ── CORS ────────────────────────────────────────────────────────────────────
   await app.register(cors, {
-    origin: [cfg.frontendUrl, 'http://localhost:5173', 'http://localhost:4301'],
+    origin: [cfg.frontendUrl,'https://meet-scheduler-frontend.vercel.app', 'http://localhost:5173', 'http://localhost:4301'],
     credentials: true,
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
   })
