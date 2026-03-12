@@ -1,0 +1,144 @@
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "windows"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Auth ────────────────────────────────────────────────────────────────────
+
+model User {
+  // role: "USER" | "ADMIN"
+  id           String        @id @default(cuid())
+  email        String        @unique
+  passwordHash String
+  role         String        @default("USER")
+  name         String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  sessions     Session[]
+  subscription Subscription?
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  userId       String
+  refreshToken String   @unique
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ─── Subscription ─────────────────────────────────────────────────────────────
+
+model Subscription {
+  // plan: "MONTHLY" | "YEARLY"
+  // status: "PENDING" | "ACTIVE" | "EXPIRED" | "CANCELLED"
+  id                String    @id @default(cuid())
+  userId            String    @unique
+  plan              String    @default("MONTHLY")
+  status            String    @default("PENDING")
+  amount            Int
+  razorpayOrderId   String?   @unique
+  razorpayPaymentId String?
+  razorpaySignature String?
+  startsAt          DateTime?
+  expiresAt         DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ─── CMS — Landing Page Content ───────────────────────────────────────────────
+
+model HeroSection {
+  id           String   @id @default(cuid())
+  badge        String
+  headline     String
+  subheadline  String
+  primaryCta   String
+  secondaryCta String
+  bookDemoCta  String
+  updatedAt    DateTime @updatedAt
+}
+
+model Feature {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  bullets     String   // JSON array string: ["item1","item2"]
+  iconName    String   // lucide icon name e.g. "Zap"
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Integration {
+  id       String  @id @default(cuid())
+  name     String
+  iconType String  // google | outlook | teams | slack | zoom
+  isActive Boolean @default(true)
+  order    Int     @default(0)
+}
+
+model HowItWorksStep {
+  id          String @id @default(cuid())
+  stepNumber  Int
+  title       String
+  description String
+  colorClass  String // bg-teal-600 | bg-teal-500 | bg-coral-500
+  order       Int    @default(0)
+}
+
+model Testimonial {
+  id        String  @id @default(cuid())
+  name      String
+  role      String
+  company   String
+  quote     String
+  initials  String
+  cardColor String  // green | cyan | blue | purple
+  order     Int     @default(0)
+  isActive  Boolean @default(true)
+}
+
+model PricingPlan {
+  id           String  @id @default(cuid())
+  name         String
+  monthlyPrice Float
+  yearlyPrice  Float
+  description  String
+  features     String  // JSON array string
+  ctaText      String
+  isPopular    Boolean @default(false)
+  order        Int     @default(0)
+  isActive     Boolean @default(true)
+}
+
+model AppScreen {
+  id       String  @id @default(cuid())
+  title    String
+  imageUrl String
+  altText  String
+  order    Int     @default(0)
+  isActive Boolean @default(true)
+}
+
+model Stat {
+  id    String @id @default(cuid())
+  value String // "50K+"
+  label String // "Meetings Scheduled"
+  order Int    @default(0)
+}
+
+model FaqItem {
+  id       String  @id @default(cuid())
+  question String
+  answer   String
+  order    Int     @default(0)
+  isActive Boolean @default(true)
+}
